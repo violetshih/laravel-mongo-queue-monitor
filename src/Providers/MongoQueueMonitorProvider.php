@@ -8,13 +8,11 @@ use Illuminate\Queue\Events\JobExceptionOccurred;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
-use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 use violetshih\MongoQueueMonitor\Routes\MongoQueueMonitorRoutes;
 use violetshih\MongoQueueMonitor\Services\QueueMonitor;
-
 use violetshih\MongoQueueMonitor\Providers\MongoQueueMonitorComponentsProvider;
 
 class MongoQueueMonitorProvider extends ServiceProvider
@@ -48,11 +46,11 @@ class MongoQueueMonitorProvider extends ServiceProvider
 
         Route::mixin(new MongoQueueMonitorRoutes());
 
-				//handle Job Creation event
-				Event::listen(JobQueued::class,  [QueueMonitor::class, 'handleJobQueued']);
+        //handle Job Creation event
+        Event::listen(JobQueued::class, [QueueMonitor::class, 'handleJobQueued']);
 
-				/** @var QueueManager $manager */
-        $manager = app(QueueManager::class);
+        /** @var \Illuminate\Queue\QueueManager $manager */
+        $manager = app(\Illuminate\Queue\QueueManager::class);
 
         $manager->before(static function (JobProcessing $event) {
             QueueMonitor::handleJobProcessing($event);
@@ -82,7 +80,7 @@ class MongoQueueMonitorProvider extends ServiceProvider
 				//Register Blade X Components
 				$this->app->register('violetshih\MongoQueueMonitor\Providers\MongoQueueMonitorComponentsProvider');
 
-				if ( ! $this->app->configurationIsCached()) {
+				if (!$this->app->configurationIsCached()) {
             $this->mergeConfigFrom(
                 __DIR__ . '/../../config/queue-monitor.php',
                 'queue-monitor'

@@ -27,6 +27,10 @@ class MongoQueueMonitorRoutes
             if (config('queue-monitor.ui.allow_purge')) {
                 $this->delete('purge/{viewname?}', '\violetshih\MongoQueueMonitor\Controllers\PurgeMonitorsController')->name('queue-monitor::purge');
             }
+
+            if (config('queue-monitor.ui.allow_retry')) {
+                $this->post('monitors/{monitor}/retry/{viewname?}', '\violetshih\MongoQueueMonitor\Controllers\RetryMonitorController')->name('queue-monitor::retry');
+            }
         };
     }
 }

@@ -14,7 +14,7 @@ use violetshih\MongoQueueMonitor\Models\Contracts\MonitorContract;
 use violetshih\MongoQueueMonitor\Traits\IsMonitored;
 use Throwable;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class QueueMonitor
 {
@@ -125,7 +125,7 @@ class QueueMonitor
 		protected static function jobQueued(JobQueued $event): void
 		{
 				// $event->job is an App\Jobs\XXXX instance and not an Illuminate\Contracts\Queue\Job
-				if ( ! self::shouldBeMonitoredClassName(get_class($event->job))) {
+				if (!self::shouldBeMonitoredClassName(get_class($event->job))) {
 						return;
 				}
 
@@ -166,7 +166,7 @@ class QueueMonitor
 		 */
 		protected static function jobStarted(JobContract $job): void
 		{
-				if ( ! self::shouldBeMonitored($job)) {
+				if (!self::shouldBeMonitored($job)) {
 						return;
 				}
 
@@ -206,7 +206,7 @@ class QueueMonitor
 		 */
 		protected static function jobFinished(JobContract $job, bool $failed = false, ?Throwable $exception = null): void
 		{
-				if ( ! self::shouldBeMonitored($job)) {
+				if (!self::shouldBeMonitored($job)) {
 						return;
 				}
 

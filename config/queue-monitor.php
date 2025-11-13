@@ -38,6 +38,11 @@ return [
          */
         'allow_purge' => true,
 
+        /**
+         * Allow retrying failed jobs.
+         */
+        'allow_retry' => true,
+
         'show_metrics' => true,
 
         /**

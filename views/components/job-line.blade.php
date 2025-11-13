@@ -68,15 +68,18 @@
 			@endif
 		</td>
 		<td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
-				@if($job->hasFailed() && $job->exception_message !== null)
-						<textarea rows="4" class="w-64 text-xs p-1 border rounded" readonly>{{ $job->exception_message }}</textarea>
-				@else
-						-
-				@endif
+			@if($job->hasFailed() && $job->exception_message !== null)
+					<textarea rows="4" class="w-64 text-xs p-1 border rounded" readonly>{{ $job->exception_message }}</textarea>
+			@else
+					-
+			@endif
 		</td>
-		@if ($allowDeletion)
-			<td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+		<td class="p-4 text-gray-800 text-sm leading-5 border-b border-gray-200">
+			@if(config('queue-monitor.ui.allow_retry') && $job->hasFailed())
+				<x-job-retry-form :job="$job" :viewname="$viewname"></x-job-retry-form>
+			@endif
+			@if ($allowDeletion)
 				<x-job-delete-form :job="$job" :viewname="$viewname"></x-job-delete-form>
-			</td>
-		@endif
+			@endif
+		</td>
 </tr>

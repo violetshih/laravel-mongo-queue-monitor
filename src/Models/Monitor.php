@@ -4,8 +4,8 @@ namespace violetshih\MongoQueueMonitor\Models;
 
 use Carbon\CarbonInterval;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model as MongoModel;
+use MongoDB\Laravel\Eloquent\Builder as MongoBuilder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use violetshih\MongoQueueMonitor\Models\Contracts\MonitorContract;
@@ -83,7 +83,7 @@ class Monitor extends Model implements MonitorContract
 
     public function scopeToday(Builder $query)
     {
-        return $query->whereRaw('DATE(started_at) = ?', [Carbon::now()->subHours(1)->format('Y-m-d')]);
+        return $query->where('started_at', '>', Carbon::now()->subHours(1)->format('Y-m-d'));
     }
 
     public function scopeFailed(Builder $query)
@@ -227,7 +227,7 @@ class Monitor extends Model implements MonitorContract
     }
 
     /**
-     * check if the job is finished.
+     * Check if the job is finished.
      *
      * @return bool
      */
@@ -251,16 +251,16 @@ class Monitor extends Model implements MonitorContract
     }
 
     /**
-     * check if the job has succeeded.
+     * Check if the job has succeeded.
      *
      * @return bool
      */
     public function hasSucceeded(): bool
     {
-        if ( ! $this->isFinished()) {
+        if (!$this->isFinished()) {
             return false;
         }
 
-        return ! $this->hasFailed();
+        return !$this->hasFailed();
     }
 }

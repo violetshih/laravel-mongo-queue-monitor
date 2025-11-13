@@ -10,6 +10,7 @@ use violetshih\MongoQueueMonitor\Components\JobsList;
 use violetshih\MongoQueueMonitor\Components\JobLine;
 use violetshih\MongoQueueMonitor\Components\JobDeleteForm;
 use violetshih\MongoQueueMonitor\Components\JobPurgeForm;
+use violetshih\MongoQueueMonitor\Components\JobRetryForm;
 
 class MongoQueueMonitorComponentsProvider extends ServiceProvider
 {
@@ -27,6 +28,7 @@ class MongoQueueMonitorComponentsProvider extends ServiceProvider
 				Blade::component('job-line', JobLine::class);
 				Blade::component('job-delete-form', JobDeleteForm::class);
 				Blade::component('job-purge-form', JobPurgeForm::class);
+				Blade::component('job-retry-form', JobRetryForm::class);
 		}
 
 		/**

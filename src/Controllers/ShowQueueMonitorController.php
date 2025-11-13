@@ -4,7 +4,7 @@ namespace violetshih\MongoQueueMonitor\Controllers;
 
 use Carbon\Carbon;
 use MongoDB\BSON\UTCDateTime;
-use Jenssegers\Mongodb\Eloquent\Builder;
+use MongoDB\Laravel\Eloquent\Builder;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -22,15 +22,19 @@ class ShowQueueMonitorController
     public function __invoke(Request $request, String $viewname = null)
     {
 				$data = $request->validate([
-            'type' => ['nullable', 'string', Rule::in(['all', 'pending', 'running', 'failed', 'succeeded'])],
-            'queue' => ['nullable', 'string'],
+				        'type' => ['nullable', 'string', Rule::in(['all', 'pending', 'running', 'failed', 'succeeded'])],
+				        'queue' => ['nullable', 'string'],
+				        'custom_data_key' => ['nullable', 'string'],
+				        'custom_data_value' => ['nullable', 'string'],
 						'view' => ['nullable', 'string']
-        ]);
+				    ]);
 
-        $filters = [
-            'type' => $data['type'] ?? 'all',
-            'queue' => $data['queue'] ?? 'all',
-        ];
+				    $filters = [
+				        'type' => $data['type'] ?? 'all',
+				        'queue' => $data['queue'] ?? 'all',
+				        'custom_data_key' => $data['custom_data_key'] ?? null,
+				        'custom_data_value' => $data['custom_data_value'] ?? null,
+				    ];
 
         $jobs = QueueMonitor::getModel()
 						->newQuery()
@@ -55,6 +59,11 @@ class ShowQueueMonitorController
             })
             ->when(($queue = $filters['queue']) && 'all' !== $queue, static function (Builder $builder) use ($queue) {
                 $builder->where('queue', $queue);
+            })
+            ->when($filters['custom_data_key'] && $filters['custom_data_value'], static function (Builder $builder) use ($filters) {
+                $customDataKey = $filters['custom_data_key'];
+                $customDataValue = $filters['custom_data_value'];
+                $builder->where('data', 'regexp', sprintf('/"%s":\s*"%s"/', $customDataKey, $customDataValue));
             })
             ->ordered()
             ->paginate(

@@ -4,10 +4,8 @@ namespace violetshih\MongoQueueMonitor\Models;
 
 use Carbon\CarbonInterval;
 use Exception;
-//use Illuminate\Database\Eloquent\Builder;
-//use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Builder;
+use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Builder;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -48,8 +46,8 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
     ];
 
     protected $dates = [
-				'queued_at',
-				'started_at',
+        'queued_at',
+        'started_at',
         'finished_at',
     ];
 
@@ -87,7 +85,7 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
 
     public function scopeToday(Builder $query)
     {
-        return $query->where('queued_at', '>', [Carbon::now()->subHours(1)->format('Y-m-d')]);
+        return $query->where('queued_at', '>', Carbon::now()->subHours(1)->format('Y-m-d'));
     }
 
     public function scopeFailed(Builder $query)
@@ -100,10 +98,10 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
         return $query->where('failed', false);
     }
 
-		public function scopePending(Builder $query)
-    {
-        return $query->whereNull('started_at');
-    }
+		  public function scopePending(Builder $query)
+		  {
+		      return $query->whereNull('started_at');
+		  }
 
     /*
      *--------------------------------------------------------------------------
@@ -235,51 +233,51 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
         return Arr::last(explode('\\', $this->name));
     }
 
-		/**
-     * check if the job is started.
-     *
-     * @return bool
-     */
-    public function isStarted(): bool
-    {
-        return !is_null($this->started_at);
-    }
+		  /**
+		   * Check if the job is started.
+		   *
+		   * @return bool
+		   */
+		  public function isStarted(): bool
+		  {
+		      return !is_null($this->started_at);
+		  }
 
-    /**
-     * check if the job is finished.
-     *
-     * @return bool
-     */
-    public function isFinished(): bool
-    {
-        if ($this->hasFailed()) {
-            return true;
-        }
-
-        return null !== $this->finished_at;
-    }
-
-    /**
-     * Check if the job has failed.
-     *
-     * @return bool
-     */
-    public function hasFailed(): bool
-    {
-        return true === $this->failed;
-    }
-
-    /**
-     * check if the job has succeeded.
-     *
-     * @return bool
-     */
-    public function hasSucceeded(): bool
-    {
-        if ( ! $this->isFinished()) {
-            return false;
-        }
-
-        return ! $this->hasFailed();
-    }
+      /**
+       * Check if the job is finished.
+       *
+       * @return bool
+       */
+      public function isFinished(): bool
+      {
+          if ($this->hasFailed()) {
+              return true;
+          }
+  
+          return null !== $this->finished_at;
+      }
+  
+      /**
+       * Check if the job has failed.
+       *
+       * @return bool
+       */
+      public function hasFailed(): bool
+      {
+          return true === $this->failed;
+      }
+  
+      /**
+       * Check if the job has succeeded.
+       *
+       * @return bool
+       */
+      public function hasSucceeded(): bool
+      {
+          if (!$this->isFinished()) {
+              return false;
+          }
+  
+          return !$this->hasFailed();
+      }
 }

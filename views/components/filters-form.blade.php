@@ -29,6 +29,18 @@
 										@endforeach
 								</select>
 						</div>
+						<div class="px-2 w-1/4">
+								<label for="custom_data_key" class="block mb-1 text-xs uppercase font-semibold text-gray-600">
+										Data Key
+								</label>
+								<input type="text" name="custom_data_key" id="custom_data_key" value="{{ old('custom_data_key', $filters['custom_data_key'] ?? '') }}" placeholder="e.g., tenant_id" class="w-full p-2 bg-gray-200 border-2 border-gray-300 rounded">
+						</div>
+						<div class="px-2 w-1/4">
+								<label for="custom_data_value" class="block mb-1 text-xs uppercase font-semibold text-gray-600">
+										Data Value
+								</label>
+								<input type="text" name="custom_data_value" id="custom_data_value" value="{{ old('custom_data_value', $filters['custom_data_value'] ?? '') }}" placeholder="e.g., 3e492113-0729-4650-a0d6-4707b0e68948" class="w-full p-2 bg-gray-200 border-2 border-gray-300 rounded">
+						</div>
 				</div>
 				<div class="mt-4">
 						<button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-xs font-medium uppercase tracking-wider text-white rounded">
