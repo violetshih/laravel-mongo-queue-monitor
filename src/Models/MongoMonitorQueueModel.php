@@ -45,12 +45,9 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
 
     protected $casts = [
         'failed' => 'bool',
-    ];
-
-    protected $dates = [
-				'queued_at',
-				'started_at',
-        'finished_at',
+        'queued_at' => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
     ];
 
     public $timestamps = false;

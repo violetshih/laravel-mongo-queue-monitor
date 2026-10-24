@@ -5,7 +5,7 @@ This package offers monitoring like [Laravel Horizon](https://laravel.com/docs/h
 
 This package is a fork of romanzipp's [laravel-queue-monitor](https://github.com/romanzipp/Laravel-Queue-Monitor)
 
-This package requires Laravel 11 and [mongodb/laravel-mongodb](https://github.com/mongodb/laravel-mongodb) 4.2.
+This package requires Laravel 12 and [mongodb/laravel-mongodb](https://github.com/mongodb/laravel-mongodb) 5.2.
 
 ## Features
 
