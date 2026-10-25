@@ -1,5 +1,5 @@
 {
-  "version": "5.0.0",
+  "version": "6.0.0",
   "name": "violetshih/laravel-mongo-queue-monitor",
   "description": "Queue Monitoring for Laravel MongoDb Job Queue",
   "type": "library",
@@ -21,11 +21,8 @@
     "nesbot/carbon": "^3.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.17",
-    "laravel/framework": "^7.30.3|^8.22.1|^9.0|^10.0",
-    "mockery/mockery": "^1.3.2",
-    "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0", 
-    "phpunit/phpunit": "^8.0|^9.0|^10.0"
+    "orchestra/testbench": "^11.0",
+    "phpunit/phpunit": "^11.0|^12.0"
   },
   "autoload": {
     "psr-4": {
@@ -48,6 +45,9 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   }
 }

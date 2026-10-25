@@ -12,10 +12,10 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
+use violetshih\MongoQueueMonitor\Models\MongoMonitorQueueModel;
 use violetshih\MongoQueueMonitor\Routes\MongoQueueMonitorRoutes;
 use violetshih\MongoQueueMonitor\Services\QueueMonitor;
 
-use violetshih\MongoQueueMonitor\Providers\MongoQueueMonitorComponentsProvider;
 
 class MongoQueueMonitorProvider extends ServiceProvider
 {
