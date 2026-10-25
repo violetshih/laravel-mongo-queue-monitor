@@ -171,26 +171,36 @@ class QueueMonitor
 				}
 
 				$now = Carbon::now();
+				$model = self::getModel();
+				$jobId = self::getJobId($job);
 
-					$model = self::getModel();
-
-					$monitor = $model::query()
-							->where('job_id', self::getJobId($job))
-							->first();
-
-					$attributes = [
+				$attributes = [
 						'name' => $job->resolveName(),
 						'queue' => $job->getQueue(),
 						'started_at' => $now,
 						'started_at_exact' => $now->format(self::TIMESTAMP_EXACT_FORMAT),
 						'attempt' => $job->attempts(),
-					];
+				];
 
 				try {
-						$monitor->update($attributes);
+						$monitor = $model::query()
+								->where('job_id', $jobId)
+								->first();
+
+						if ($monitor) {
+								$monitor->update($attributes);
+						} else {
+								// sync 佇列不會發 JobQueued，在開始時建立監控文件
+								$model::create($attributes + [
+										'job_id' => $jobId,
+										'queued_at' => $now,
+										'queued_at_exact' => $now->format(self::TIMESTAMP_EXACT_FORMAT),
+										'failed' => false,
+								]);
+						}
 				}
 				catch(Throwable $e) {
-						Log::error('violetshih/MongoQueueMonitor - jobStarted - unable to update Monitor : Monitor job id = ' . self::getJobId($job) . ' exists ? ');
+						Log::error('violetshih/MongoQueueMonitor - jobStarted - unable to update Monitor : Monitor job id = ' . $jobId . ' exists ? ');
 						Log::debug($e);
 				}
 		}

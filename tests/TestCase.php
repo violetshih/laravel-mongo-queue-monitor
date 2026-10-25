@@ -2,61 +2,52 @@
 
 namespace violetshih\MongoQueueMonitor\Tests;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
+use MongoDB\Laravel\MongodbServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use violetshih\MongoQueueMonitor\Providers\QueueMonitorProvider;
+use violetshih\MongoQueueMonitor\Models\MongoMonitorQueueModel;
+use violetshih\MongoQueueMonitor\Providers\MongoQueueMonitorProvider;
 use violetshih\MongoQueueMonitor\Services\QueueMonitor;
-use violetshih\MongoQueueMonitor\Tests\Support\BaseJob;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
-    use DatabaseMigrations;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
-        QueueMonitor::$loadMigrations = true;
-
         parent::setUp();
 
-        $this->withoutMockingConsoleOutput();
-        $this->withoutExceptionHandling();
-
-        try {
-            $this->artisan('queue:table');
-            $this->artisan('migrate');
-        } catch (InvalidArgumentException $e) {
-            // TODO: this command fails locally but is required for travis ci
+        $database = config('database.connections.mongodb.database');
+        if ($database !== 'queue_monitor_package_test') {
+            $this->fail('拒絕清空非套件測試庫：'.$database);
         }
-    }
 
-    protected function dispatch(BaseJob $job): self
-    {
-        dispatch($job);
-
-        return $this;
-    }
-
-    protected function assertDispatched(string $jobClass): self
-    {
-        $rows = DB::select('SELECT * FROM jobs');
-
-        $this->assertCount(1, $rows);
-        $this->assertEquals($jobClass, json_decode($rows[0]->payload)->displayName);
-
-        return $this;
-    }
-
-    protected function workQueue(): void
-    {
-        $this->artisan('queue:work --once --sleep 1');
+        MongoMonitorQueueModel::query()->delete();
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            QueueMonitorProvider::class,
+            MongodbServiceProvider::class,
+            MongoQueueMonitorProvider::class,
         ];
+    }
+
+    protected function defineEnvironment($app)
+    {
+        $app['config']->set('queue.default', 'sync');
+        $app['config']->set('database.default', 'mongodb');
+        $app['config']->set('database.connections.mongodb', [
+            'driver' => 'mongodb',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => (int) env('DB_PORT', 27017),
+            'database' => env('DB_DATABASE', 'queue_monitor_package_test'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'admin'),
+            'options' => [
+                'database' => env('DB_AUTHENTICATION_DATABASE', 'admin'),
+            ],
+        ]);
+        $app['config']->set('queue-monitor.table', 'queue_monitor');
+        $app['config']->set('queue-monitor.model', MongoMonitorQueueModel::class);
+
+        QueueMonitor::$model = MongoMonitorQueueModel::class;
     }
 }

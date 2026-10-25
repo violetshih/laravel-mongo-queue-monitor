@@ -6,8 +6,8 @@ use Carbon\CarbonInterval;
 use Exception;
 //use Illuminate\Database\Eloquent\Builder;
 //use Illuminate\Database\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Model;
-use Jenssegers\Mongodb\Eloquent\Builder;
+use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Builder;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -45,12 +45,9 @@ class MongoMonitorQueueModel extends Model implements MonitorContract
 
     protected $casts = [
         'failed' => 'bool',
-    ];
-
-    protected $dates = [
-				'queued_at',
-				'started_at',
-        'finished_at',
+        'queued_at' => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
     ];
 
     public $timestamps = false;

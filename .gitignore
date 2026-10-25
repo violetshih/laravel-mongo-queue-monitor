@@ -16,4 +16,4 @@ yarn-error.log
 /.idea
 /.vscode
 cmd.txt
-.DS_Store
+.DS_Store.phpunit.cache

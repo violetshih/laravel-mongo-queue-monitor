@@ -4,7 +4,7 @@ namespace violetshih\MongoQueueMonitor\Controllers;
 
 use Carbon\Carbon;
 use MongoDB\BSON\UTCDateTime;
-use Jenssegers\Mongodb\Eloquent\Builder;
+use MongoDB\Laravel\Eloquent\Builder;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
